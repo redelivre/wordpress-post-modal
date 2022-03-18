@@ -306,6 +306,8 @@
                   function (response) {
                     $.when(modalContent.html(response.post_content)).done(
                       function () {
+                        // execute post load page scritps for others plugin js compatibilitiy
+                        jQuery( 'body' ).trigger( 'post-load' );
                         // scroll to anchor
                         setTimeout(function () {
                           if (postAnchor) {
