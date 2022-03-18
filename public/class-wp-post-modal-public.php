@@ -187,10 +187,10 @@ class WP_Post_Modal_Public
             $response = new WP_Error('post_private', 'Post is not published', array('status' => 403));
         } elseif ($post['post_content'] && ($post['post_status'] === "published" || $post['post_status'] === "publish") ) {
             // render shortcodes from Visual Composer
+        	if ( function_exists( 'ADDTOANY_SHARE_SAVE_KIT' ) ) {
+        		$post['post_content'] .= ADDTOANY_SHARE_SAVE_KIT(array('output_later' => true));
+        	}
             $post['post_content'] = apply_filters('the_content', $post['post_content']);
-            if ( function_exists( 'ADDTOANY_SHARE_SAVE_KIT' ) ) {
-            	$post['post_content'] .= ADDTOANY_SHARE_SAVE_KIT(array('output_later' => true));
-            }
             $filtered_post = array_intersect_key($post, array_flip(array('post_content')));
 
             $response = new WP_REST_Response($filtered_post);
