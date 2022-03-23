@@ -188,7 +188,7 @@ class WP_Post_Modal_Public
         } elseif ($post['post_content'] && ($post['post_status'] === "published" || $post['post_status'] === "publish") ) {
             // render shortcodes from Visual Composer
         	if ( function_exists( 'ADDTOANY_SHARE_SAVE_KIT' ) ) {
-        		$post['post_content'] .= ADDTOANY_SHARE_SAVE_KIT(array('output_later' => true));
+        		$post['post_content'] .= ADDTOANY_SHARE_SAVE_KIT(array('output_later' => true, 'linkname' => get_the_title($post['ID'])));
         	}
             $post['post_content'] = apply_filters('the_content', $post['post_content']);
             $filtered_post = array_intersect_key($post, array_flip(array('post_content')));
