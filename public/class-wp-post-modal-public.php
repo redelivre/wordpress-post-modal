@@ -190,6 +190,28 @@ class WP_Post_Modal_Public
         	if ( function_exists( 'ADDTOANY_SHARE_SAVE_KIT' ) ) {
         		$post['post_content'] .= ADDTOANY_SHARE_SAVE_KIT(array('output_later' => true, 'linkname' => get_the_title($post['ID'])));
         	}
+        	$thumb_html = "";
+        	if( function_exists("et_builder_init_global_settings") && function_exists("et_builder_add_main_elements")) {
+        		et_builder_init_global_settings ();
+        		et_builder_add_main_elements ();
+        		$thumb = '';
+        		
+        		$width = (int) apply_filters( 'et_pb_index_blog_image_width', 1080 );
+        		
+        		$height = (int) apply_filters( 'et_pb_index_blog_image_height', 675 );
+        		$classtext = 'et_featured_image';
+        		$titletext = get_the_title();
+        		$alttext = get_post_meta( get_post_thumbnail_id(), '_wp_attachment_image_alt', true );
+        		$post_obj = get_post($post['ID']);
+        		$thumbnail = get_thumbnail( $width, $height, $classtext, $alttext, $titletext, false, 'Blogimage', $post_obj );
+        		$thumb = $thumbnail["thumb"];
+        		$post_format = et_pb_post_format();
+        		if ( ! in_array( $post_format, array( 'gallery', 'link', 'quote' ) ) && 'on' === et_get_option( 'divi_thumbnails', 'on' ) && '' !== $thumb ) {
+        			$thumb_html = print_thumbnail( $thumb, $thumbnail["use_timthumb"], $alttext, $width, $height, '', false, false, true, $post_obj );
+        		}
+        		$post['post_content'] = $thumb_html.$post['post_content'];
+        	}
+
             $post['post_content'] = apply_filters('the_content', $post['post_content']);
             $filtered_post = array_intersect_key($post, array_flip(array('post_content')));
 
