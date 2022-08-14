@@ -159,6 +159,19 @@ class WP_Post_Modal_Public
         ));
     }
 
+    function get_attachment_url_by_slug( $slug ) {
+    	$args = array(
+    			'post_type' => 'attachment',
+    			'name' => sanitize_title($slug),
+    			'posts_per_page' => 1,
+    			'post_status' => 'inherit',
+    	);
+    	$_header = get_posts( $args );
+    	$header = $_header ? array_pop($_header) : null;
+    	return $header ? get_post($header, ARRAY_A) : false;
+    }
+    
+    
     /**
      *
      * Get content by slug
@@ -176,10 +189,14 @@ class WP_Post_Modal_Public
         }
 
         // get slug from request
-        $slug = $request['slug'];
+        $slug = sanitize_title( $request['slug'] );
 
         // get title by slug
         $post = get_page_by_path($slug, ARRAY_A, get_post_types());
+        
+        if(is_null($post) || ( is_array($post) && count($post) === 0 ) ) {
+        	$post = $this->get_attachment_url_by_slug($slug);
+        }
 
         if (!empty($post['post_password'])) {
             $response = new WP_Error('post_password_protected', 'Post is password protected', array('status' => 403));
